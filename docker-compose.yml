@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16    # Puedes especificar la versión que prefieras
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"       # Exponer el puerto para que puedas conectarte desde tu máquina local
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Volumen para persistencia de datos
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: project-trek-server
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: user
+      DB_PASSWORD: user
+      DB_NAME: postgres,
+      CLOUDINARY_API: CUSTOM_CLOUDINARY_API
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+volumes:
+  pgdata:
